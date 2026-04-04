@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: ai-chat
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
