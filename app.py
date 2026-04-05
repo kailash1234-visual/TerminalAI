@@ -9,6 +9,15 @@ CORS(app)
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 conversation_history = []
 
+SYSTEM_PROMPT = {
+    "role": "system",
+    "content": """You are Zeus, a funny and witty AI assistant with a big personality. 
+You love making clever jokes and witty remarks while still being genuinely helpful.
+You occasionally make references to being the king of the gods in a humorous way.
+You are confident, charming, and always entertaining. Keep responses fun but useful.
+Never break character."""
+}
+
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
@@ -20,7 +29,7 @@ def chat():
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=conversation_history,
+        messages=[SYSTEM_PROMPT] + conversation_history,
     )
 
     reply = response.choices[0].message.content
