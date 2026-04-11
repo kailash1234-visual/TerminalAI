@@ -1,208 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Zeus AI</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #f8f9fa; height: 100vh; display: flex; overflow: hidden; }
-        .app { display: flex; width: 100%; height: 100vh; }
-        .sidebar { width: 240px; background: #1a1a2e; display: flex; flex-direction: column; padding: 1rem; gap: 8px; flex-shrink: 0; }
-        .logo { display: flex; align-items: center; gap: 10px; padding-bottom: 1rem; border-bottom: 0.5px solid rgba(255,255,255,0.1); margin-bottom: 0.5rem; }
-        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; flex-shrink: 0; }
-        .logo-text { color: #fff; font-size: 15px; font-weight: 600; }
-        .logo-sub { color: rgba(255,255,255,0.4); font-size: 11px; }
-        .new-chat-btn { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.15); color: #fff; padding: 9px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; text-align: left; }
-        .new-chat-btn:hover { background: rgba(255,255,255,0.12); }
-        .sidebar-label { color: rgba(255,255,255,0.3); font-size: 11px; padding: 0.5rem 0.5rem 0.25rem; letter-spacing: 0.5px; }
-        .chat-item { padding: 8px 10px; border-radius: 8px; color: rgba(255,255,255,0.6); font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-item.active { background: rgba(255,255,255,0.1); color: #fff; }
-        .chat-item:hover { background: rgba(255,255,255,0.07); }
-        .sidebar-bottom { margin-top: auto; padding-top: 1rem; border-top: 0.5px solid rgba(255,255,255,0.1); }
-        .user-info { display: flex; align-items: center; gap: 8px; padding: 8px; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; flex-shrink: 0; }
-        .user-name { color: rgba(255,255,255,0.7); font-size: 13px; }
-        .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .topbar { padding: 0.875rem 1.25rem; border-bottom: 0.5px solid #e5e7eb; background: #fff; display: flex; align-items: center; justify-content: space-between; }
-        .topbar-left { display: flex; align-items: center; gap: 10px; }
-        .ai-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; }
-        .ai-name { font-size: 15px; font-weight: 600; color: #111; }
-        .ai-status { font-size: 12px; color: #22c55e; display: flex; align-items: center; gap: 4px; }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ZEUS_AI // TERMINAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .welcome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; background: #f8f9fa; }
-        .welcome-icon { width: 64px; height: 64px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; margin-bottom: 1rem; }
-        .welcome h1 { font-size: 26px; font-weight: 700; color: #111; margin-bottom: 0.5rem; }
-        .welcome p { font-size: 15px; color: #6b7280; margin-bottom: 2rem; }
-        .suggestions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 2rem; }
-        .suggestion { padding: 10px 16px; border-radius: 20px; border: 0.5px solid #e5e7eb; background: #fff; font-size: 13px; color: #374151; cursor: pointer; }
-        .suggestion:hover { background: #f3f4f6; border-color: #667eea; color: #667eea; }
+  :root {
+    --green: #00ff41;
+    --green-dim: #00c032;
+    --green-dark: #003b0f;
+    --green-faint: rgba(0,255,65,0.07);
+    --green-glow: 0 0 8px rgba(0,255,65,0.6), 0 0 20px rgba(0,255,65,0.2);
+    --amber: #ffb000;
+    --bg: #020a04;
+    --bg2: #030d05;
+    --text-dim: #00883a;
+    --text-muted: #005520;
+  }
 
-        .messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 16px; background: #f8f9fa; display: none; }
-        .messages::-webkit-scrollbar { width: 4px; }
-        .messages::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
-        .msg-row { display: flex; gap: 10px; align-items: flex-start; }
-        .msg-row.user { flex-direction: row-reverse; }
-        .msg-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-        .ai-av { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
-        .user-av { background: #e5e7eb; color: #555; }
-        .msg-content { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
-        .msg-row.user .msg-content { align-items: flex-end; }
-        .sender { font-size: 11px; color: #9ca3af; font-weight: 500; }
-        .bubble { padding: 10px 14px; font-size: 14px; line-height: 1.55; border-radius: 12px; }
-        .ai-bubble { background: #fff; color: #111; border: 0.5px solid #e5e7eb; border-top-left-radius: 4px; }
-        .user-bubble { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-top-right-radius: 4px; }
-        .msg-time { font-size: 11px; color: #d1d5db; }
-        .input-area { padding: 1rem 1.25rem; border-top: 0.5px solid #e5e7eb; background: #fff; }
-        .input-box { display: flex; align-items: center; gap: 10px; background: #f9fafb; border: 0.5px solid #e5e7eb; border-radius: 12px; padding: 8px 12px; }
-        .input-box input { flex: 1; border: none; background: transparent; font-size: 14px; color: #111; outline: none; }
-        .input-box input::placeholder { color: #9ca3af; }
-        .send-btn { width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; cursor: pointer; color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .send-btn:hover { opacity: 0.85; }
-        .typing { display: flex; gap: 4px; align-items: center; padding: 10px 14px; background: #fff; border-radius: 12px; border: 0.5px solid #e5e7eb; border-top-left-radius: 4px; width: fit-content; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: #d1d5db; animation: bounce 1.2s infinite; }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-        @media (max-width: 600px) {
-    .sidebar { display: none; }
-    .main { width: 100%; height: 100vh; display: flex; flex-direction: column; }
-    .messages { padding: 0.75rem; flex: 1; display: flex; }
-    .msg-content { max-width: 85%; }
-    .topbar { padding: 0.75rem 1rem; flex-shrink: 0; }
-    .input-area { padding: 0.75rem 1rem; flex-shrink: 0; position: sticky; bottom: 0; background: #fff; }
-    .bubble { font-size: 13px; padding: 9px 12px; }
-    .welcome { padding: 1.5rem 1rem; }
-    body { height: 100vh; overflow: hidden; }
-}
-    </style>
+  html, body {
+    height: 100%; width: 100%;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 18px;
+    background: var(--green);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: screen;
+    transition: transform 0.05s;
+    box-shadow: var(--green-glow);
+  }
+
+  /* CRT scanlines overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* CRT vignette */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 60%,
+      rgba(0,0,0,0.75) 100%
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @keyframes flicker {
+    0%, 97%, 100% { opacity: 1; }
+    98% { opacity: 0.85; }
+    99% { opacity: 0.95; }
+  }
+
+  .app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    animation: flicker 8s infinite;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    border-bottom: 1px solid var(--text-muted);
+    padding: 0.6rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--green);
+    text-shadow: var(--green-glow);
+    letter-spacing: 2px;
+  }
+
+  .topbar-meta {
+    display: flex; align-items: center; gap: 20px;
+    font-size: 11px; color: var(--text-dim);
+  }
+
+  .status-indicator { display: flex; align-items: center; gap: 6px; }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: var(--green-glow);
+    animation: blink-dot 2s ease-in-out infinite;
+  }
+  @keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .topbar-btn {
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: none;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .topbar-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+    text-shadow: var(--green-glow);
+    box-shadow: inset 0 0 8px rgba(0,255,65,0.1);
+  }
+
+  /* ── BOOT SCREEN ── */
+  .boot {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; padding: 2rem 2.5rem;
+    overflow: hidden;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .boot-line {
+    font-size: 13px; color: var(--text-dim);
+    margin-bottom: 2px;
+    opacity: 0;
+    animation: fadeIn 0.1s forwards;
+  }
+  .boot-line.bright { color: var(--green); }
+  .boot-line.amber  { color: var(--amber); }
+  .boot-line.gap    { margin-bottom: 14px; }
+
+  .zeus-ascii {
+    font-family: 'VT323', monospace;
+    font-size: clamp(36px, 6vw, 56px);
+    color: var(--green);
+    text-shadow: var(--green-glow);
+    letter-spacing: 6px;
+    margin: 1.2rem 0 0.4rem;
+    opacity: 0;
+    animation: fadeIn 0.3s 0.6s forwards;
+  }
+
+  .boot-prompt {
+    font-size: 13px; color: var(--green);
+    margin-top: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 0.3s 1s forwards;
+  }
+
+  .suggestions-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeIn 0.3s 1.3s forwards;
+  }
+
+  .suggestion {
+    border: 1px solid var(--text-muted);
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    cursor: none;
+    transition: all 0.15s;
+    background: transparent;
+    letter-spacing: 0.5px;
+  }
+  .suggestion:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-faint);
+    text-shadow: 0 0 6px rgba(0,255,65,0.5);
+  }
+
+  /* ── TERMINAL OUTPUT ── */
+  .terminal {
+    flex: 1; overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+    display: none; flex-direction: column;
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  .terminal.active { display: flex; flex-direction: column; }
+  .terminal::-webkit-scrollbar { width: 3px; }
+  .terminal::-webkit-scrollbar-thumb { background: var(--text-muted); }
+
+  .t-block { margin-bottom: 1.5rem; }
+
+  .t-user-line {
+    font-size: 13px; color: var(--amber);
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeIn 0.15s forwards;
+  }
+  .t-user-line .prompt { color: var(--text-dim); margin-right: 6px; }
+  .t-user-line .t-time { color: var(--text-muted); font-size: 10px; margin-left: 10px; }
+
+  .t-zeus-header {
+    font-size: 10px; color: var(--text-muted);
+    margin-bottom: 5px; letter-spacing: 1.5px;
+    opacity: 0;
+    animation: fadeIn 0.15s 0.05s forwards;
+  }
+
+  .t-line {
+    font-size: 13px; color: var(--green);
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeIn 0.2s forwards;
+    text-shadow: 0 0 4px rgba(0,255,65,0.25);
+  }
+
+  .t-divider {
+    border: none;
+    border-top: 1px solid var(--text-muted);
+    margin-top: 10px;
+    opacity: 0;
+  }
+
+  /* Typing indicator */
+  .t-typing {
+    font-size: 12px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeIn 0.15s forwards;
+  }
+
+  /* ── INPUT BAR ── */
+  .input-area {
+    border-top: 1px solid var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    background: var(--bg2);
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .input-prefix {
+    font-family: 'VT323', monospace;
+    font-size: 20px; color: var(--green);
+    text-shadow: var(--green-glow);
+    flex-shrink: 0; line-height: 1;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .input-area input {
+    flex: 1; border: none; background: transparent;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; color: var(--green);
+    outline: none; caret-color: var(--green);
+    letter-spacing: 0.5px;
+    min-width: 0;
+  }
+  .input-area input::placeholder { color: var(--text-muted); }
+  .input-area input::selection { background: var(--green); color: var(--bg); }
+
+  .send-btn {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    padding: 5px 14px;
+    cursor: none;
+    transition: all 0.15s;
+    text-shadow: 0 0 6px rgba(0,255,65,0.4);
+    flex-shrink: 0;
+  }
+  .send-btn:hover {
+    background: var(--green-faint);
+    box-shadow: var(--green-glow);
+  }
+
+  /* Blinking block cursor */
+  .blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink-cursor 1s step-end infinite;
+    box-shadow: var(--green-glow);
+  }
+  @keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  @media (max-width: 600px) {
+    .input-prefix { font-size: 15px; }
+    .boot { padding: 1.5rem 1rem; }
+    .zeus-ascii { font-size: 32px; letter-spacing: 3px; }
+    .terminal { padding: 0.75rem 1rem; }
+    .input-area { padding: 0.6rem 0.75rem; }
+    .suggestions-row { display: none; }
+    .topbar { padding: 0.5rem 1rem; }
+  }
+</style>
 </head>
 <body>
+
+<div class="cursor" id="cursor"></div>
+
 <div class="app">
-    <div class="sidebar">
-        <div class="logo">
-            <div class="logo-icon">&#9889;</div>
-            <div>
-                <div class="logo-text">Zeus AI</div>
-                <div class="logo-sub">by Human</div>
-            </div>
-        </div>
-        <button class="new-chat-btn" onclick="clearChat()">&#43; New chat</button>
-        <div class="sidebar-label">RECENT</div>
-        <div class="chat-item active">Current chat</div>
-        <div class="sidebar-bottom">
-            <div class="user-info">
-                <div class="user-avatar">U</div>
-                <div class="user-name">User</div>
-            </div>
-        </div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title">⚡ ZEUS_AI // TERMINAL v2.0</div>
+    <div class="topbar-meta">
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span>ONLINE</span>
+      </div>
+      <span id="clock">--:--:--</span>
+      <button class="topbar-btn" onclick="clearChat()">[ CLR ]</button>
     </div>
-    <div class="main">
-        <div class="topbar">
-            <div class="topbar-left">
-                <div class="ai-avatar">&#9889;</div>
-                <div>
-                    <div class="ai-name">Zeus</div>
-                    <div class="ai-status"><div class="status-dot"></div>Online</div>
-                </div>
-            </div>
-        </div>
+  </div>
 
-        <div class="welcome" id="welcome">
-            <div class="welcome-icon">&#9889;</div>
-            <h1>Vanakkam da Mapla</h1>
-            <p>Naa tha Zeus! — Ethuvum venum na kelu</p>
-            <div class="suggestions">
-                <div class="suggestion" onclick="suggest('Todays Hot News')">Todays Hot News</div>
-                <div class="suggestion" onclick="suggest('What can you do?')">What can you do?</div>
-                <div class="suggestion" onclick="suggest('Explain black holes')">Explain black holes</div>
-                <div class="suggestion" onclick="suggest('How many AI are there!')">How many AI are there!</div>
-            </div>
-        </div>
-
-        <div class="messages" id="msgs"></div>
-
-        <div class="input-area">
-            <div class="input-box">
-                <input type="text" id="inp" placeholder="Message Zeus..." />
-                <button class="send-btn" onclick="sendMessage()">&#10148;</button>
-            </div>
-        </div>
+  <!-- BOOT SCREEN -->
+  <div class="boot" id="boot">
+    <div class="boot-line bright" style="animation-delay:0.05s">ZEUS_AI TERMINAL — BUILD 2025.04</div>
+    <div class="boot-line" style="animation-delay:0.15s">Connecting to Groq API.................. <span style="color:var(--green)">OK</span></div>
+    <div class="boot-line" style="animation-delay:0.25s">Loading LLaMA-3.3-70B model............. <span style="color:var(--green)">OK</span></div>
+    <div class="boot-line gap" style="animation-delay:0.35s">Mounting conversation kernel............. <span style="color:var(--green)">OK</span></div>
+    <div class="boot-line amber" style="animation-delay:0.45s">WARNING: Zeus personality active. Proceed with caution.</div>
+    <div class="zeus-ascii">[ ZEUS ]</div>
+    <div class="boot-prompt">System ready. Awaiting input.<span class="blink"></span></div>
+    <div class="suggestions-row">
+      <button class="suggestion" onclick="suggest('Today\'s hot news')">$ today's news</button>
+      <button class="suggestion" onclick="suggest('What can you do?')">$ capabilities</button>
+      <button class="suggestion" onclick="suggest('Explain black holes')">$ black holes</button>
+      <button class="suggestion" onclick="suggest('How many AIs are there?')">$ list AIs</button>
     </div>
+  </div>
+
+  <!-- TERMINAL OUTPUT -->
+  <div class="terminal" id="terminal"></div>
+
+  <!-- INPUT BAR -->
+  <div class="input-area">
+    <div class="input-prefix">root@zeus:~$</div>
+    <input type="text" id="inp" placeholder="enter command..." autocomplete="off" spellcheck="false" />
+    <button class="send-btn" onclick="sendMessage()">EXEC</button>
+  </div>
+
 </div>
 
 <script>
-    function getTime() {
-        return new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  // Custom cursor
+  const cursorEl = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top = e.clientY + 'px';
+  });
+  document.addEventListener('mousedown', () => cursorEl.style.transform = 'scaleY(0.6)');
+  document.addEventListener('mouseup',   () => cursorEl.style.transform = 'scaleY(1)');
+
+  // Live clock
+  function updateClock() {
+    document.getElementById('clock').textContent =
+      new Date().toLocaleTimeString([], { hour12: false });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  }
+
+  function suggest(text) {
+    document.getElementById('inp').value = text;
+    sendMessage();
+  }
+
+  async function clearChat() {
+    const terminal = document.getElementById('terminal');
+    terminal.innerHTML = '';
+    terminal.classList.remove('active');
+    document.getElementById('boot').style.display = 'flex';
+    await fetch('/clear', { method: 'POST' }).catch(() => {});
+  }
+
+  function esc(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  let isLoading = false;
+
+  async function sendMessage() {
+    if (isLoading) return;
+    const inp      = document.getElementById('inp');
+    const terminal = document.getElementById('terminal');
+    const boot     = document.getElementById('boot');
+    const msg      = inp.value.trim();
+    if (!msg) return;
+
+    isLoading = true;
+    boot.style.display = 'none';
+    terminal.classList.add('active');
+    inp.value = '';
+
+    // User line
+    const userBlock = document.createElement('div');
+    userBlock.className = 't-block';
+    userBlock.innerHTML = `
+      <div class="t-user-line">
+        <span class="prompt">root@zeus:~$</span><span>${esc(msg)}</span>
+        <span class="t-time">[${getTime()}]</span>
+      </div>`;
+    terminal.appendChild(userBlock);
+    terminal.scrollTop = terminal.scrollHeight;
+
+    // Typing indicator
+    const typingEl = document.createElement('div');
+    typingEl.className = 't-typing';
+    typingEl.id = 'typing-indicator';
+    typingEl.innerHTML = `<span class="blink"></span> ZEUS PROCESSING...`;
+    terminal.appendChild(typingEl);
+    terminal.scrollTop = terminal.scrollHeight;
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+      document.getElementById('typing-indicator')?.remove();
+
+      const zeusBlock = document.createElement('div');
+      zeusBlock.className = 't-block';
+
+      const header = document.createElement('div');
+      header.className = 't-zeus-header';
+      header.textContent = `// ZEUS OUTPUT [${getTime()}]`;
+      zeusBlock.appendChild(header);
+
+      const lines = data.reply.split('\n').filter(l => l.trim() !== '');
+      lines.forEach((line, i) => {
+        const div = document.createElement('div');
+        div.className = 't-line';
+        div.style.animationDelay = `${i * 90}ms`;
+        div.textContent = line;
+        zeusBlock.appendChild(div);
+      });
+
+      const hr = document.createElement('hr');
+      hr.className = 't-divider';
+      const hrDelay = lines.length * 90 + 120;
+      hr.style.animation = `fadeIn 0.2s ${hrDelay}ms forwards`;
+      zeusBlock.appendChild(hr);
+
+      terminal.appendChild(zeusBlock);
+      terminal.scrollTop = terminal.scrollHeight;
+      setTimeout(() => { terminal.scrollTop = terminal.scrollHeight; }, hrDelay + 100);
+
+    } catch(e) {
+      document.getElementById('typing-indicator')?.remove();
+      const errBlock = document.createElement('div');
+      errBlock.className = 't-block';
+      errBlock.innerHTML = `<div class="t-line" style="color:var(--amber);opacity:1">ERROR: Connection failed. Retry.</div><hr class="t-divider" style="opacity:0.4">`;
+      terminal.appendChild(errBlock);
     }
 
-    function suggest(text) {
-        document.getElementById('inp').value = text;
-        sendMessage();
-    }
+    isLoading = false;
+    terminal.scrollTop = terminal.scrollHeight;
+  }
 
-    function clearChat() {
-        document.getElementById('msgs').innerHTML = '';
-        document.getElementById('msgs').style.display = 'none';
-        document.getElementById('welcome').style.display = 'flex';
-    }
-
-    async function sendMessage() {
-        const inp = document.getElementById('inp');
-        const msgs = document.getElementById('msgs');
-        const welcome = document.getElementById('welcome');
-        const msg = inp.value.trim();
-        if (!msg) return;
-
-        welcome.style.display = 'none';
-        msgs.style.display = 'flex';
-
-        msgs.innerHTML += `
-            <div class="msg-row user">
-                <div class="msg-avatar user-av">U</div>
-                <div class="msg-content">
-                    <div class="sender">User</div>
-                    <div class="bubble user-bubble">${msg}</div>
-                    <div class="msg-time">${getTime()}</div>
-                </div>
-            </div>`;
-        inp.value = '';
-        msgs.scrollTop = msgs.scrollHeight;
-
-        msgs.innerHTML += `
-            <div class="msg-row" id="typing">
-                <div class="msg-avatar ai-av">&#9889;</div>
-                <div class="msg-content">
-                    <div class="sender">Zeus</div>
-                    <div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-                </div>
-            </div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-
-        const response = await fetch("/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg })
-        });
-
-        const data = await response.json();
-        document.getElementById('typing')?.remove();
-        msgs.innerHTML += `
-            <div class="msg-row">
-                <div class="msg-avatar ai-av">&#9889;</div>
-                <div class="msg-content">
-                    <div class="sender">Zeus</div>
-                    <div class="bubble ai-bubble">${data.reply}</div>
-                    <div class="msg-time">${getTime()}</div>
-                </div>
-            </div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-    }
-
-    document.getElementById('inp').addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMessage();
-    });
+  document.getElementById('inp').addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendMessage();
+  });
 </script>
 </body>
 </html>
