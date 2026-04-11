@@ -9,14 +9,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --ink:    #0e0d0b;
-  --paper:  #f5f0e8;
-  --cream:  #ede8dc;
+  --ink:    #080706;
+  --paper:  #f2ece0;
+  --cream:  #e8e0d0;
   --gold:   #c9a84c;
-  --gold2:  #a8863a;
-  --red:    #c0392b;
-  --muted:  #7a7060;
-  --faint:  #d8d2c4;
+  --gold2:  #9a7830;
+  --red:    #b02a1f;
+  --muted:  #5a5040;
+  --faint:  #c8c0b0;
   --font-d: 'Playfair Display', Georgia, serif;
   --font-m: 'Space Mono', monospace;
 }
@@ -27,8 +27,8 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
   position: fixed; inset: 0; z-index: 0;
   background-color: var(--paper);
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(0,0,0,0.015) 28px, rgba(0,0,0,0.015) 29px),
-    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(0,0,0,0.008) 28px, rgba(0,0,0,0.008) 29px);
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(0,0,0,0.018) 28px, rgba(0,0,0,0.018) 29px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(0,0,0,0.01) 28px, rgba(0,0,0,0.01) 29px);
 }
 
 .app {
@@ -40,7 +40,7 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 /* ── MASTHEAD ── */
 .masthead {
   background: var(--ink);
-  padding: 0.6rem 1.5rem 0.55rem;
+  padding: 0.65rem 1.5rem 0.6rem;
   display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0; border-bottom: 3px double var(--gold); position: relative;
 }
@@ -48,49 +48,52 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: var(--gold);
 }
-.mast-left { display: flex; flex-direction: column; gap: 1px; }
+.mast-left { display: flex; flex-direction: column; gap: 2px; }
 .mast-dateline {
-  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
-  color: var(--gold2); text-transform: uppercase;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px;
+  color: var(--gold); text-transform: uppercase; font-weight: 700;
 }
 .mast-title {
-  font-family: var(--font-d); font-size: clamp(26px, 4vw, 38px);
-  font-weight: 900; color: var(--paper);
-  letter-spacing: 6px; line-height: 1; text-transform: uppercase;
+  font-family: var(--font-d); font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900; color: #fff;
+  letter-spacing: 7px; line-height: 1; text-transform: uppercase;
 }
-.mast-rule { width: 1px; height: 40px; background: rgba(201,168,76,0.3); }
+.mast-rule { width: 1px; height: 44px; background: rgba(201,168,76,0.4); }
 .mast-center { text-align: center; }
 .mast-vol {
-  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
-  color: var(--muted); text-transform: uppercase;
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 3px;
+  color: rgba(255,255,255,0.55); text-transform: uppercase; font-weight: 700;
 }
 .mast-tagline {
-  font-family: var(--font-d); font-style: italic; font-size: 13px;
-  color: var(--gold); letter-spacing: 1px;
+  font-family: var(--font-d); font-style: italic; font-size: 14px;
+  color: var(--gold); letter-spacing: 0.5px; margin-top: 2px;
 }
-.mast-right { display: flex; align-items: center; gap: 12px; }
-.mast-clock { font-family: var(--font-m); font-size: 12px; color: var(--gold2); letter-spacing: 1px; }
+.mast-right { display: flex; align-items: center; gap: 14px; }
+.mast-clock {
+  font-family: var(--font-m); font-size: 13px; color: var(--gold);
+  letter-spacing: 1px; font-weight: 700;
+}
 .mast-btn {
-  background: transparent; border: 1px solid rgba(201,168,76,0.3); color: var(--gold2);
-  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
-  padding: 4px 12px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; font-weight: 700;
+  padding: 5px 14px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
 }
-.mast-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.mast-btn:hover { background: var(--gold); color: var(--ink); }
 
 /* ── SECTION RULE ── */
 .section-rule {
-  background: var(--paper); border-bottom: 1px solid var(--faint);
+  background: var(--ink); border-bottom: 2px solid var(--gold2);
   padding: 0 1.5rem; display: flex; align-items: center; flex-shrink: 0;
 }
 .sr-tag {
-  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
-  color: var(--paper); background: var(--ink); padding: 3px 14px;
-  text-transform: uppercase; flex-shrink: 0;
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 3px; font-weight: 700;
+  color: var(--gold); padding: 4px 16px 4px 0;
+  text-transform: uppercase; flex-shrink: 0; border-right: 1px solid var(--gold2);
 }
-.sr-line { flex: 1; height: 1px; background: var(--faint); }
+.sr-line { flex: 1; height: 1px; background: rgba(201,168,76,0.2); margin: 0 14px; }
 .sr-right {
-  font-family: var(--font-m); font-size: 8px; letter-spacing: 2px;
-  color: var(--muted); padding: 3px 0 3px 12px; flex-shrink: 0;
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; font-weight: 700;
+  color: rgba(255,255,255,0.5); padding: 4px 0; flex-shrink: 0;
 }
 
 /* ── BODY ── */
@@ -98,122 +101,127 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 
 /* ── LEFT SIDEBAR ── */
 .col-left {
-  width: 200px; flex-shrink: 0;
-  border-right: 1px solid var(--faint);
+  width: 210px; flex-shrink: 0;
+  border-right: 2px solid var(--faint);
   padding: 1.25rem 1rem;
   display: flex; flex-direction: column; gap: 1.25rem;
   overflow-y: auto; background: var(--cream);
 }
 
 .col-hd {
-  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
-  color: var(--muted); text-transform: uppercase;
-  padding-bottom: 5px; border-bottom: 2px solid var(--ink); margin-bottom: 2px;
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 3px; font-weight: 700;
+  color: var(--ink); text-transform: uppercase;
+  padding-bottom: 6px; border-bottom: 2px solid var(--ink); margin-bottom: 3px;
 }
 
-/* Static nav */
 .nav-link {
-  font-family: var(--font-d); font-size: 13px; color: var(--ink);
-  cursor: pointer; padding: 3px 0; transition: all 0.15s;
+  font-family: var(--font-d); font-size: 14px; font-weight: 700; color: var(--ink);
+  cursor: pointer; padding: 4px 0; transition: all 0.15s;
   display: flex; align-items: center; gap: 8px;
 }
-.nav-link::before { content: '§'; color: var(--faint); font-size: 10px; }
+.nav-link::before { content: '§'; color: var(--gold2); font-size: 11px; }
 .nav-link:hover { color: var(--red); }
 .nav-link:hover::before { color: var(--red); }
 
-/* Chat history list */
-.chat-history { display: flex; flex-direction: column; gap: 3px; }
+/* Chat history */
+.chat-history { display: flex; flex-direction: column; gap: 4px; }
 
 .hist-item {
-  font-family: var(--font-m); font-size: 10px;
+  font-family: var(--font-m); font-size: 11px; font-weight: 700;
   color: var(--muted); cursor: pointer;
-  padding: 6px 8px; border: 1px solid transparent;
-  transition: all 0.15s; line-height: 1.3;
-  position: relative;
+  padding: 7px 10px 7px 12px; border: 1px solid var(--faint);
+  transition: all 0.15s; line-height: 1.35;
+  position: relative; background: var(--paper);
 }
 .hist-item::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 2px; background: var(--gold); transform: scaleY(0);
+  width: 3px; background: var(--gold); transform: scaleY(0);
   transition: transform 0.15s; transform-origin: bottom;
 }
-.hist-item:hover { color: var(--ink); border-color: var(--faint); background: var(--paper); }
+.hist-item:hover { color: var(--ink); border-color: var(--ink); }
 .hist-item:hover::before { transform: scaleY(1); }
-.hist-item.active {
-  color: var(--ink); border-color: var(--faint);
-  background: var(--paper); font-weight: 700;
-}
+.hist-item.active { color: var(--ink); border-color: var(--ink); background: #fff; }
 .hist-item.active::before { transform: scaleY(1); }
 
 .hist-num {
-  font-size: 8px; letter-spacing: 2px; color: var(--gold2);
-  display: block; margin-bottom: 1px; text-transform: uppercase;
+  font-size: 9px; letter-spacing: 2px; color: var(--gold2); font-weight: 700;
+  display: block; margin-bottom: 2px; text-transform: uppercase;
 }
 .hist-preview {
   display: block; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis; max-width: 168px;
+  color: var(--ink);
 }
 
 /* Chat stat */
-.chat-stat { border: 1px solid var(--faint); background: var(--paper); padding: 10px 12px; }
-.cs-label { font-family: var(--font-m); font-size: 8px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-.cs-count { font-family: var(--font-d); font-size: 32px; font-weight: 900; color: var(--ink); line-height: 1; }
-.cs-sub { font-family: var(--font-m); font-size: 9px; color: var(--muted); margin-top: 2px; }
+.chat-stat { border: 2px solid var(--ink); background: var(--paper); padding: 10px 12px; }
+.cs-label {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 4px;
+}
+.cs-count { font-family: var(--font-d); font-size: 36px; font-weight: 900; color: var(--ink); line-height: 1; }
+.cs-sub { font-family: var(--font-m); font-size: 10px; color: var(--muted); margin-top: 3px; font-weight: 700; }
 
 /* Pull quote */
-.pull-quote { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 10px 0; margin-top: auto; }
-.pq-text { font-family: var(--font-d); font-style: italic; font-size: 13px; line-height: 1.5; color: var(--ink); margin-bottom: 6px; }
-.pq-attr { font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+.pull-quote {
+  border-top: 3px solid var(--ink); border-bottom: 2px solid var(--ink);
+  padding: 12px 0; margin-top: auto;
+}
+.pq-text {
+  font-family: var(--font-d); font-style: italic; font-size: 14px;
+  line-height: 1.55; color: var(--ink); margin-bottom: 8px;
+}
+.pq-attr {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; font-weight: 700;
+  color: var(--gold2); text-transform: uppercase;
+}
 
 /* ── MAIN ── */
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
 
-/* All chat panes sit here */
 .chat-pane {
   flex: 1; overflow-y: auto; padding: 0;
   display: none; flex-direction: column;
   background: var(--paper); position: absolute; inset: 0;
 }
 .chat-pane.active { display: flex; position: relative; }
-.chat-pane::-webkit-scrollbar { width: 3px; }
+.chat-pane::-webkit-scrollbar { width: 4px; }
 .chat-pane::-webkit-scrollbar-thumb { background: var(--faint); }
 
-/* Front / welcome */
-.front {
-  flex: 1; overflow-y: auto; background: var(--paper);
-  display: flex; flex-direction: column;
-}
+.front { flex: 1; overflow-y: auto; background: var(--paper); display: flex; flex-direction: column; }
 .front.hidden { display: none; }
 
 .hero {
-  padding: 2rem 2rem 1.5rem; border-bottom: 1px solid var(--faint);
+  padding: 2.5rem 2.5rem 2rem; border-bottom: 2px solid var(--faint);
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
 .hero-kicker {
-  font-family: var(--font-m); font-size: 9px; letter-spacing: 4px;
-  color: var(--red); text-transform: uppercase; margin-bottom: 8px;
-  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 5px; font-weight: 700;
+  color: var(--red); text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
 }
-.hero-kicker::before, .hero-kicker::after { content: ''; flex: 1; height: 1px; background: var(--red); max-width: 40px; }
+.hero-kicker::before, .hero-kicker::after { content: ''; flex: 1; height: 2px; background: var(--red); max-width: 40px; }
 .hero-hed {
-  font-family: var(--font-d); font-size: clamp(28px, 5vw, 52px);
-  font-weight: 900; line-height: 1.05; color: var(--ink); letter-spacing: -1px; margin-bottom: 10px;
+  font-family: var(--font-d); font-size: clamp(32px, 5.5vw, 58px);
+  font-weight: 900; line-height: 1.05; color: var(--ink); letter-spacing: -1px; margin-bottom: 12px;
 }
 .hero-hed em { font-style: italic; color: var(--gold2); }
 .hero-dek {
-  font-family: var(--font-d); font-style: italic; font-size: 15px;
-  color: var(--muted); max-width: 480px; line-height: 1.5; margin-bottom: 1.5rem;
+  font-family: var(--font-d); font-style: italic; font-size: 17px; font-weight: 400;
+  color: var(--muted); max-width: 500px; line-height: 1.55; margin-bottom: 2rem;
 }
 .cmd-grid {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 0; max-width: 440px; width: 100%; border: 1px solid var(--ink);
+  gap: 0; max-width: 460px; width: 100%; border: 2px solid var(--ink);
 }
 .cmd-cell {
-  padding: 10px 14px; font-family: var(--font-d); font-size: 13px; color: var(--ink);
-  cursor: pointer; transition: all 0.2s; border: 0.5px solid var(--faint); line-height: 1.35;
+  padding: 14px 16px; font-family: var(--font-d); font-size: 15px; font-weight: 700;
+  color: var(--ink); cursor: pointer; transition: all 0.2s;
+  border: 1px solid var(--faint); line-height: 1.35;
 }
 .cmd-cell .cmd-num {
-  font-family: var(--font-m); font-size: 8px; letter-spacing: 2px;
-  color: var(--muted); display: block; margin-bottom: 3px;
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; font-weight: 700;
+  color: var(--gold2); display: block; margin-bottom: 4px;
 }
 .cmd-cell:hover { background: var(--ink); color: var(--paper); }
 .cmd-cell:hover .cmd-num { color: var(--gold); }
@@ -221,27 +229,41 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 /* ── MESSAGES ── */
 @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-.msg-wrap { border-bottom: 1px solid var(--faint); padding: 1.25rem 1.5rem; animation: slideUp 0.25s ease; }
-.msg-wrap.user { background: var(--cream); }
+.msg-wrap {
+  border-bottom: 1px solid var(--faint); padding: 1.5rem 2rem;
+  animation: slideUp 0.25s ease;
+}
+.msg-wrap.user { background: var(--cream); border-bottom: 2px solid var(--faint); }
 
 .msg-byline {
-  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; font-weight: 700;
+  text-transform: uppercase; display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
 }
 .msg-byline.user { color: var(--red); justify-content: flex-end; }
 .msg-byline.zeus { color: var(--gold2); }
-.byline-rule { flex: 1; height: 1px; background: currentColor; opacity: 0.2; max-width: 60px; }
+.byline-rule { flex: 1; height: 1px; background: currentColor; opacity: 0.3; max-width: 70px; }
 
-.msg-text { font-family: var(--font-d); font-size: 14px; line-height: 1.75; color: var(--ink); }
-.msg-text.user { text-align: right; font-style: italic; }
+.msg-text {
+  font-family: var(--font-d); font-size: 16px; line-height: 1.8; color: var(--ink);
+}
+.msg-text.user { text-align: right; font-style: italic; font-weight: 400; }
 .msg-line { display: block; opacity: 0; animation: slideUp 0.2s ease forwards; }
 
 /* Typing */
-.typing-wrap { border-bottom: 1px solid var(--faint); padding: 1.25rem 1.5rem; background: var(--paper); }
-.typing-byline { font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; color: var(--gold2); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-.typing-body { font-family: var(--font-d); font-style: italic; font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
-.t-dots { display: flex; gap: 4px; }
-.t-d { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: tpulse 1.2s ease-in-out infinite; }
+.typing-wrap { border-bottom: 1px solid var(--faint); padding: 1.5rem 2rem; background: var(--paper); }
+.typing-byline {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; font-weight: 700;
+  color: var(--gold2); margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+}
+.typing-body {
+  font-family: var(--font-d); font-style: italic; font-size: 16px;
+  color: var(--muted); display: flex; align-items: center; gap: 12px;
+}
+.t-dots { display: flex; gap: 5px; }
+.t-d {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+  animation: tpulse 1.2s ease-in-out infinite;
+}
 .t-d:nth-child(2){animation-delay:0.15s;}
 .t-d:nth-child(3){animation-delay:0.3s;}
 @keyframes tpulse { 0%,60%,100%{transform:scale(0.5);opacity:0.3;} 30%{transform:scale(1);opacity:1;} }
@@ -249,31 +271,34 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 /* ── FOOTER ── */
 .footer {
   border-top: 3px double var(--ink); background: var(--cream);
-  padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 14px; flex-shrink: 0;
 }
-.footer-label { font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
+.footer-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 2px; font-weight: 700;
+  color: var(--ink); text-transform: uppercase; flex-shrink: 0;
+}
 .footer input {
   flex: 1; border: none; background: transparent;
-  font-family: var(--font-d); font-style: italic; font-size: 14px;
+  font-family: var(--font-d); font-style: italic; font-size: 16px; font-weight: 400;
   color: var(--ink); outline: none; min-width: 0;
-  border-bottom: 1px solid var(--faint); padding-bottom: 2px; transition: border-color 0.2s;
+  border-bottom: 2px solid var(--faint); padding-bottom: 3px; transition: border-color 0.2s;
 }
 .footer input:focus { border-bottom-color: var(--ink); }
 .footer input::placeholder { color: var(--faint); }
 .send-btn {
-  background: var(--ink); border: none; color: var(--paper);
-  font-family: var(--font-m); font-size: 9px; letter-spacing: 3px;
-  padding: 8px 20px; cursor: pointer; text-transform: uppercase; flex-shrink: 0; transition: all 0.2s;
+  background: var(--ink); border: none; color: #fff;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 3px; font-weight: 700;
+  padding: 10px 22px; cursor: pointer; text-transform: uppercase; flex-shrink: 0; transition: all 0.2s;
 }
-.send-btn:hover { background: var(--gold); color: var(--ink); }
+.send-btn:hover { background: var(--gold2); color: #fff; }
 .send-btn:active { transform: scale(0.97); }
 
 @media (max-width: 600px) {
   .col-left { display: none; }
-  .hero-hed { font-size: 26px; }
+  .hero-hed { font-size: 28px; }
   .cmd-grid { grid-template-columns: 1fr; }
-  .footer   { padding: 0.6rem 1rem; }
-  .msg-wrap { padding: 1rem; }
+  .footer   { padding: 0.7rem 1rem; }
+  .msg-wrap { padding: 1rem 1.25rem; }
   .mast-rule, .mast-center { display: none; }
 }
 </style>
@@ -313,20 +338,18 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
     <div class="col-left">
       <div>
         <div class="col-hd">Navigation</div>
-        <div class="nav-link" onclick="goFront()">§ Front Page</div>
-        <div class="nav-link">§ Archive</div>
-        <div class="nav-link">§ Settings</div>
+        <div class="nav-link" onclick="goFront()">Front Page</div>
+        <div class="nav-link">Archive</div>
+        <div class="nav-link">Settings</div>
       </div>
 
-      <!-- Chat history -->
       <div>
         <div class="col-hd">Chat History</div>
         <div class="chat-history" id="chat-history">
-          <div style="font-family:var(--font-m);font-size:10px;color:var(--faint);padding:4px 0;">No chats yet.</div>
+          <div style="font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--faint);padding:4px 0;">No chats yet.</div>
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="chat-stat">
         <div class="cs-label">Total Chats</div>
         <div class="cs-count" id="total-chats">0</div>
@@ -341,13 +364,11 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 
     <!-- MAIN -->
     <div class="main" id="main">
-
-      <!-- FRONT PAGE -->
       <div class="front" id="front">
         <div class="hero">
           <div class="hero-kicker">Breaking</div>
           <div class="hero-hed">Vanakkam da <em>Mapla</em></div>
-          <div class="hero-dek">Naa tha Zeus — ethuvum venum na kelu. The oracle is open. What will you ask?</div>
+          <div class="hero-dek">Naa tha Zeus — ethuvum venum na kelu. </div>
           <div class="cmd-grid">
             <div class="cmd-cell" onclick="suggest('Today\'s hot news')"><span class="cmd-num">Query 01</span>Today's Hot News</div>
             <div class="cmd-cell" onclick="suggest('What can you do?')"><span class="cmd-num">Query 02</span>Capabilities</div>
@@ -356,37 +377,32 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
           </div>
         </div>
       </div>
-
     </div>
+
   </div>
 
   <!-- FOOTER -->
   <div class="footer">
-    <div class="footer-label">Dispatch →</div>
-    <input type="text" id="inp" placeholder="Address your query to Zeus..." autocomplete="off" spellcheck="false"/>
+    <div class="footer-label">Quaries →</div>
+    <input type="text" id="inp" placeholder="Ask Zeus..." autocomplete="off" spellcheck="false"/>
     <button class="send-btn" onclick="sendMessage()">Transmit</button>
   </div>
 
 </div>
 
 <script>
-  /* ── State ── */
-  let chats        = [];   // [{id, title, messages:[{role,text,ts}], history:[{role,content}]}]
-  let activeChatId = null;
-  let busy         = false;
+  let chats = [], activeChatId = null, busy = false;
 
-  /* ── Clock ── */
   function tick(){
     const now = new Date();
-    document.getElementById('clock').textContent     = now.toLocaleTimeString([],{hour12:false});
-    document.getElementById('dateline').textContent  = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('clock').textContent    = now.toLocaleTimeString([],{hour12:false});
+    document.getElementById('dateline').textContent = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   }
   setInterval(tick,1000); tick();
 
   function ts(){ return new Date().toLocaleTimeString([],{hour12:false}); }
   function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  /* ── Front page ── */
   function goFront(){
     setActiveChatId(null);
     document.getElementById('front').classList.remove('hidden');
@@ -394,25 +410,21 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
     updateSidebar();
   }
 
-  /* ── New Chat ── */
   function newChat(){
-    const id     = Date.now();
+    const id = Date.now();
     const chatNo = chats.length + 1;
-    const pane   = document.createElement('div');
+    const pane = document.createElement('div');
     pane.className = 'chat-pane';
-    pane.id        = 'pane-' + id;
+    pane.id = 'pane-' + id;
     document.getElementById('main').appendChild(pane);
-
     chats.push({ id, title: 'Chat ' + chatNo, messages: [], history: [] });
     document.getElementById('total-chats').textContent = chats.length;
-
     setActiveChatId(id);
     document.getElementById('front').classList.add('hidden');
     updateSidebar();
     document.getElementById('inp').focus();
   }
 
-  /* ── Switch to existing chat ── */
   function switchToChat(id){
     setActiveChatId(id);
     document.getElementById('front').classList.add('hidden');
@@ -422,48 +434,38 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
   function setActiveChatId(id){
     activeChatId = id;
     document.querySelectorAll('.chat-pane').forEach(p => p.classList.remove('active'));
-    if(id){
-      const pane = document.getElementById('pane-' + id);
-      if(pane) pane.classList.add('active');
-    }
+    if(id){ const p = document.getElementById('pane-'+id); if(p) p.classList.add('active'); }
   }
 
-  /* ── Sidebar ── */
   function updateSidebar(){
-    const container = document.getElementById('chat-history');
-    if(chats.length === 0){
-      container.innerHTML = '<div style="font-family:var(--font-m);font-size:10px;color:var(--faint);padding:4px 0;">No chats yet.</div>';
+    const c = document.getElementById('chat-history');
+    if(!chats.length){
+      c.innerHTML = '<div style="font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--faint);padding:4px 0;">No chats yet.</div>';
       return;
     }
-    container.innerHTML = '';
-    // Show newest first
+    c.innerHTML = '';
     [...chats].reverse().forEach(chat => {
       const preview = chat.messages.length > 0 ? chat.messages[0].text : 'Empty';
-      const item    = document.createElement('div');
+      const item = document.createElement('div');
       item.className = 'hist-item' + (chat.id === activeChatId ? ' active' : '');
       item.innerHTML = `<span class="hist-num">${chat.title}</span><span class="hist-preview">${esc(preview)}</span>`;
-      item.onclick   = () => switchToChat(chat.id);
-      container.appendChild(item);
+      item.onclick = () => switchToChat(chat.id);
+      c.appendChild(item);
     });
   }
 
-  /* ── Suggest ── */
   function suggest(t){
     if(!activeChatId) newChat();
     document.getElementById('inp').value = t;
     sendMessage();
   }
 
-  /* ── Send ── */
   async function sendMessage(){
     if(busy) return;
     const inp = document.getElementById('inp');
     const msg = inp.value.trim();
     if(!msg) return;
-
-    // Start a new chat automatically if on front page
     if(!activeChatId) newChat();
-
     const chat = chats.find(c => c.id === activeChatId);
     if(!chat) return;
 
@@ -473,47 +475,34 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
 
     const pane = document.getElementById('pane-' + activeChatId);
 
-    /* Save & render user message */
-    chat.messages.push({ role: 'user', text: msg, ts: ts() });
-    chat.history.push({ role: 'user', content: msg });
-    // Update sidebar preview with first user message
+    chat.messages.push({ role:'user', text:msg, ts:ts() });
+    chat.history.push({ role:'user', content:msg });
     if(chat.messages.length === 1) updateSidebar();
 
     const ub = document.createElement('div');
     ub.className = 'msg-wrap user';
     ub.innerHTML = `
       <div class="msg-byline user">
-        <span>${ts()}</span>
-        <div class="byline-rule"></div>
-        <span>You</span>
+        <span>${ts()}</span><div class="byline-rule"></div><span>You</span>
       </div>
       <div class="msg-text user">${esc(msg)}</div>`;
-    pane.appendChild(ub);
-    pane.scrollTop = pane.scrollHeight;
+    pane.appendChild(ub); pane.scrollTop = pane.scrollHeight;
 
-    /* Typing indicator */
     const tb = document.createElement('div');
     tb.className = 'typing-wrap'; tb.id = 'typing';
     tb.innerHTML = `
       <div class="typing-byline"><span>Zeus</span><div class="byline-rule" style="background:var(--gold2)"></div><span>${ts()}</span></div>
       <div class="typing-body"><div class="t-dots"><div class="t-d"></div><div class="t-d"></div><div class="t-d"></div></div><span>composing response…</span></div>`;
-    pane.appendChild(tb);
-    pane.scrollTop = pane.scrollHeight;
+    pane.appendChild(tb); pane.scrollTop = pane.scrollHeight;
 
     try {
-      const res  = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      });
+      const res  = await fetch('/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg}) });
       const data = await res.json();
       document.getElementById('typing')?.remove();
 
-      /* Save zeus reply */
-      chat.messages.push({ role: 'zeus', text: data.reply, ts: ts() });
-      chat.history.push({ role: 'assistant', content: data.reply });
+      chat.messages.push({ role:'zeus', text:data.reply, ts:ts() });
+      chat.history.push({ role:'assistant', content:data.reply });
 
-      /* Render line by line */
       const zb   = document.createElement('div'); zb.className = 'msg-wrap';
       const head = document.createElement('div'); head.className = 'msg-byline zeus';
       head.innerHTML = `<span>Zeus</span><div class="byline-rule"></div><span>${ts()}</span>`;
@@ -526,12 +515,11 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
         s.className = 'msg-line';
         s.style.animationDelay = `${i * 80}ms`;
         s.textContent = line;
-        if(i < lines.length - 1) s.style.marginBottom = '6px';
+        if(i < lines.length - 1) s.style.marginBottom = '8px';
         body.appendChild(s);
       });
 
-      zb.appendChild(body);
-      pane.appendChild(zb);
+      zb.appendChild(body); pane.appendChild(zb);
       pane.scrollTop = pane.scrollHeight;
       setTimeout(() => pane.scrollTop = pane.scrollHeight, lines.length * 80 + 100);
 
@@ -544,11 +532,10 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
       pane.appendChild(eb);
     }
 
-    busy = false;
-    pane.scrollTop = pane.scrollHeight;
+    busy = false; pane.scrollTop = pane.scrollHeight;
   }
 
-  document.getElementById('inp').addEventListener('keypress', e => { if(e.key === 'Enter') sendMessage(); });
+  document.getElementById('inp').addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
 </script>
 </body>
 </html>
