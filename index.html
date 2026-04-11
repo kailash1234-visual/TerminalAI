@@ -3,493 +3,492 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>ZEUS_AI // TERMINAL</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<title>ZEUS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --green: #00ff41;
-    --green-dim: #00c032;
-    --green-dark: #003b0f;
-    --green-faint: rgba(0,255,65,0.07);
-    --green-glow: 0 0 8px rgba(0,255,65,0.6), 0 0 20px rgba(0,255,65,0.2);
-    --amber: #ffb000;
-    --bg: #020a04;
-    --bg2: #030d05;
-    --text-dim: #00883a;
-    --text-muted: #005520;
-  }
+:root {
+  --ink:     #0e0d0b;
+  --paper:   #f5f0e8;
+  --cream:   #ede8dc;
+  --gold:    #c9a84c;
+  --gold2:   #a8863a;
+  --red:     #c0392b;
+  --muted:   #7a7060;
+  --faint:   #d8d2c4;
+  --font-d:  'Playfair Display', Georgia, serif;
+  --font-m:  'Space Mono', monospace;
+}
 
-  html, body {
-    height: 100%; width: 100%;
-    background: var(--bg);
-    color: var(--green);
-    font-family: 'Share Tech Mono', monospace;
-    overflow: hidden;
-    cursor: none;
-  }
+html, body { height: 100%; background: var(--ink); overflow: hidden; }
 
-  /* Custom cursor */
-  .cursor {
-    position: fixed;
-    width: 12px; height: 18px;
-    background: var(--green);
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: screen;
-    transition: transform 0.05s;
-    box-shadow: var(--green-glow);
-  }
+.paper-bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg,   transparent, transparent 28px, rgba(0,0,0,0.015) 28px, rgba(0,0,0,0.015) 29px),
+    repeating-linear-gradient(90deg,  transparent, transparent 28px, rgba(0,0,0,0.008) 28px, rgba(0,0,0,0.008) 29px);
+}
 
-  /* CRT scanlines overlay */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.15) 2px,
-      rgba(0,0,0,0.15) 4px
-    );
-    pointer-events: none;
-    z-index: 1000;
-  }
+.app {
+  position: relative; z-index: 1;
+  height: 100dvh; display: flex; flex-direction: column;
+  font-family: var(--font-d); color: var(--ink);
+}
 
-  /* CRT vignette */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: radial-gradient(ellipse at center,
-      transparent 60%,
-      rgba(0,0,0,0.75) 100%
-    );
-    pointer-events: none;
-    z-index: 999;
-  }
+/* ── MASTHEAD ── */
+.masthead {
+  background: var(--ink);
+  padding: 0.6rem 1.5rem 0.55rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 3px double var(--gold);
+  position: relative;
+}
+.masthead::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--gold);
+}
 
-  @keyframes flicker {
-    0%, 97%, 100% { opacity: 1; }
-    98% { opacity: 0.85; }
-    99% { opacity: 0.95; }
-  }
+.mast-left { display: flex; flex-direction: column; gap: 1px; }
+.mast-dateline {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
+  color: var(--gold2); text-transform: uppercase;
+}
+.mast-title {
+  font-family: var(--font-d);
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 900; color: var(--paper);
+  letter-spacing: 6px; line-height: 1; text-transform: uppercase;
+}
 
-  .app {
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    animation: flicker 8s infinite;
-    position: relative;
-    z-index: 1;
-  }
+.mast-rule { width: 1px; height: 40px; background: rgba(201,168,76,0.3); }
 
-  /* ── TOP BAR ── */
-  .topbar {
-    border-bottom: 1px solid var(--text-muted);
-    padding: 0.6rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg2);
-    flex-shrink: 0;
-  }
+.mast-center { text-align: center; }
+.mast-vol {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
+  color: var(--muted); text-transform: uppercase;
+}
+.mast-tagline {
+  font-family: var(--font-d); font-style: italic; font-size: 13px;
+  color: var(--gold); letter-spacing: 1px;
+}
 
-  .topbar-title {
-    font-family: 'VT323', monospace;
-    font-size: 22px;
-    color: var(--green);
-    text-shadow: var(--green-glow);
-    letter-spacing: 2px;
-  }
+.mast-right { display: flex; align-items: center; gap: 12px; }
+.mast-clock { font-family: var(--font-m); font-size: 12px; color: var(--gold2); letter-spacing: 1px; }
 
-  .topbar-meta {
-    display: flex; align-items: center; gap: 20px;
-    font-size: 11px; color: var(--text-dim);
-  }
+.mast-btn {
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.3); color: var(--gold2);
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
+  padding: 4px 12px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+}
+.mast-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
-  .status-indicator { display: flex; align-items: center; gap: 6px; }
-  .status-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--green);
-    box-shadow: var(--green-glow);
-    animation: blink-dot 2s ease-in-out infinite;
-  }
-  @keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* ── SECTION RULE ── */
+.section-rule {
+  background: var(--paper); border-bottom: 1px solid var(--faint);
+  padding: 0 1.5rem; display: flex; align-items: center;
+  flex-shrink: 0; overflow: hidden;
+}
+.sr-tag {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
+  color: var(--paper); background: var(--ink); padding: 3px 14px;
+  text-transform: uppercase; flex-shrink: 0;
+}
+.sr-line { flex: 1; height: 1px; background: var(--faint); }
+.sr-right {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 2px;
+  color: var(--muted); padding: 3px 0 3px 12px; flex-shrink: 0;
+}
 
-  .topbar-btn {
-    background: transparent;
-    border: 1px solid var(--text-muted);
-    color: var(--text-dim);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    padding: 3px 10px;
-    cursor: none;
-    transition: all 0.15s;
-    letter-spacing: 1px;
-  }
-  .topbar-btn:hover {
-    border-color: var(--green);
-    color: var(--green);
-    text-shadow: var(--green-glow);
-    box-shadow: inset 0 0 8px rgba(0,255,65,0.1);
-  }
+/* ── LAYOUT ── */
+.body { flex: 1; display: flex; min-height: 0; background: var(--paper); }
 
-  /* ── BOOT SCREEN ── */
-  .boot {
-    flex: 1; display: flex; flex-direction: column;
-    justify-content: center; padding: 2rem 2.5rem;
-    overflow: hidden;
-  }
+.col-left {
+  width: 200px; flex-shrink: 0;
+  border-right: 1px solid var(--faint);
+  padding: 1.25rem 1rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+  overflow-y: auto; background: var(--cream);
+}
 
-  @keyframes fadeIn { to { opacity: 1; } }
+.col-hd {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 3px;
+  color: var(--muted); text-transform: uppercase;
+  padding-bottom: 5px; border-bottom: 2px solid var(--ink); margin-bottom: 2px;
+}
 
-  .boot-line {
-    font-size: 13px; color: var(--text-dim);
-    margin-bottom: 2px;
-    opacity: 0;
-    animation: fadeIn 0.1s forwards;
-  }
-  .boot-line.bright { color: var(--green); }
-  .boot-line.amber  { color: var(--amber); }
-  .boot-line.gap    { margin-bottom: 14px; }
+.nav-link {
+  font-family: var(--font-d); font-size: 13px; color: var(--ink);
+  cursor: pointer; padding: 3px 0;
+  transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+}
+.nav-link::before { content: '§'; color: var(--faint); font-size: 10px; }
+.nav-link:hover { color: var(--red); }
+.nav-link:hover::before { color: var(--red); }
+.nav-link.active { font-weight: 700; }
+.nav-link.active::before { color: var(--gold); }
 
-  .zeus-ascii {
-    font-family: 'VT323', monospace;
-    font-size: clamp(36px, 6vw, 56px);
-    color: var(--green);
-    text-shadow: var(--green-glow);
-    letter-spacing: 6px;
-    margin: 1.2rem 0 0.4rem;
-    opacity: 0;
-    animation: fadeIn 0.3s 0.6s forwards;
-  }
+/* Chat count stat */
+.chat-stat {
+  border: 1px solid var(--faint);
+  background: var(--paper);
+  padding: 10px 12px;
+}
+.cs-label {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 4px;
+}
+.cs-count {
+  font-family: var(--font-d); font-size: 32px; font-weight: 900;
+  color: var(--ink); line-height: 1;
+}
+.cs-sub {
+  font-family: var(--font-m); font-size: 9px; color: var(--muted);
+  margin-top: 2px;
+}
 
-  .boot-prompt {
-    font-size: 13px; color: var(--green);
-    margin-top: 1.5rem;
-    opacity: 0;
-    animation: fadeIn 0.3s 1s forwards;
-  }
+/* Pull quote box */
+.pull-quote {
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 10px 0; margin-top: auto;
+}
+.pq-text {
+  font-family: var(--font-d); font-style: italic; font-size: 13px;
+  line-height: 1.5; color: var(--ink); margin-bottom: 6px;
+}
+.pq-attr {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase;
+}
 
-  .suggestions-row {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin-top: 1rem;
-    opacity: 0;
-    animation: fadeIn 0.3s 1.3s forwards;
-  }
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
-  .suggestion {
-    border: 1px solid var(--text-muted);
-    color: var(--text-dim);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    padding: 4px 12px;
-    cursor: none;
-    transition: all 0.15s;
-    background: transparent;
-    letter-spacing: 0.5px;
-  }
-  .suggestion:hover {
-    border-color: var(--green);
-    color: var(--green);
-    background: var(--green-faint);
-    text-shadow: 0 0 6px rgba(0,255,65,0.5);
-  }
+.front { flex: 1; overflow-y: auto; background: var(--paper); display: flex; flex-direction: column; }
 
-  /* ── TERMINAL OUTPUT ── */
-  .terminal {
-    flex: 1; overflow-y: auto;
-    padding: 1.25rem 1.5rem;
-    display: none; flex-direction: column;
-    background: var(--bg);
-    scroll-behavior: smooth;
-  }
-  .terminal.active { display: flex; flex-direction: column; }
-  .terminal::-webkit-scrollbar { width: 3px; }
-  .terminal::-webkit-scrollbar-thumb { background: var(--text-muted); }
+.hero {
+  padding: 2rem 2rem 1.5rem; border-bottom: 1px solid var(--faint);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
 
-  .t-block { margin-bottom: 1.5rem; }
+.hero-kicker {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 4px;
+  color: var(--red); text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-kicker::before, .hero-kicker::after {
+  content: ''; flex: 1; height: 1px; background: var(--red); max-width: 40px;
+}
 
-  .t-user-line {
-    font-size: 13px; color: var(--amber);
-    margin-bottom: 6px;
-    opacity: 0;
-    animation: fadeIn 0.15s forwards;
-  }
-  .t-user-line .prompt { color: var(--text-dim); margin-right: 6px; }
-  .t-user-line .t-time { color: var(--text-muted); font-size: 10px; margin-left: 10px; }
+.hero-hed {
+  font-family: var(--font-d);
+  font-size: clamp(28px, 5vw, 52px); font-weight: 900; line-height: 1.05;
+  color: var(--ink); letter-spacing: -1px; margin-bottom: 10px;
+}
+.hero-hed em { font-style: italic; color: var(--gold2); }
 
-  .t-zeus-header {
-    font-size: 10px; color: var(--text-muted);
-    margin-bottom: 5px; letter-spacing: 1.5px;
-    opacity: 0;
-    animation: fadeIn 0.15s 0.05s forwards;
-  }
+.hero-dek {
+  font-family: var(--font-d); font-style: italic; font-size: 15px;
+  color: var(--muted); max-width: 480px; line-height: 1.5; margin-bottom: 1.5rem;
+}
 
-  .t-line {
-    font-size: 13px; color: var(--green);
-    line-height: 1.75;
-    opacity: 0;
-    animation: fadeIn 0.2s forwards;
-    text-shadow: 0 0 4px rgba(0,255,65,0.25);
-  }
+.cmd-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; max-width: 440px; width: 100%; border: 1px solid var(--ink);
+}
+.cmd-cell {
+  padding: 10px 14px; font-family: var(--font-d); font-size: 13px; color: var(--ink);
+  cursor: pointer; transition: all 0.2s; border: 0.5px solid var(--faint);
+  position: relative; line-height: 1.35;
+}
+.cmd-cell .cmd-num {
+  font-family: var(--font-m); font-size: 8px; letter-spacing: 2px;
+  color: var(--muted); display: block; margin-bottom: 3px;
+}
+.cmd-cell:hover { background: var(--ink); color: var(--paper); }
+.cmd-cell:hover .cmd-num { color: var(--gold); }
 
-  .t-divider {
-    border: none;
-    border-top: 1px solid var(--text-muted);
-    margin-top: 10px;
-    opacity: 0;
-  }
+/* ── CHAT ── */
+.chat {
+  flex: 1; overflow-y: auto; padding: 0;
+  display: none; flex-direction: column; background: var(--paper);
+}
+.chat.on { display: flex; }
+.chat::-webkit-scrollbar { width: 3px; }
+.chat::-webkit-scrollbar-thumb { background: var(--faint); }
 
-  /* Typing indicator */
-  .t-typing {
-    font-size: 12px; color: var(--text-dim);
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 1rem;
-    opacity: 0;
-    animation: fadeIn 0.15s forwards;
-  }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* ── INPUT BAR ── */
-  .input-area {
-    border-top: 1px solid var(--text-muted);
-    padding: 0.75rem 1.5rem;
-    background: var(--bg2);
-    display: flex; align-items: center; gap: 10px;
-    flex-shrink: 0;
-  }
+.msg-wrap {
+  border-bottom: 1px solid var(--faint);
+  padding: 1.25rem 1.5rem;
+  animation: slideUp 0.25s ease;
+}
+.msg-wrap.user { background: var(--cream); }
 
-  .input-prefix {
-    font-family: 'VT323', monospace;
-    font-size: 20px; color: var(--green);
-    text-shadow: var(--green-glow);
-    flex-shrink: 0; line-height: 1;
-    user-select: none;
-    white-space: nowrap;
-  }
+.msg-byline {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.msg-byline.user { color: var(--red); justify-content: flex-end; }
+.msg-byline.zeus { color: var(--gold2); }
+.byline-rule { flex: 1; height: 1px; background: currentColor; opacity: 0.2; max-width: 60px; }
 
-  .input-area input {
-    flex: 1; border: none; background: transparent;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px; color: var(--green);
-    outline: none; caret-color: var(--green);
-    letter-spacing: 0.5px;
-    min-width: 0;
-  }
-  .input-area input::placeholder { color: var(--text-muted); }
-  .input-area input::selection { background: var(--green); color: var(--bg); }
+.msg-text { font-family: var(--font-d); font-size: 14px; line-height: 1.75; color: var(--ink); }
+.msg-text.user { text-align: right; font-style: italic; }
 
-  .send-btn {
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px; letter-spacing: 2px;
-    padding: 5px 14px;
-    cursor: none;
-    transition: all 0.15s;
-    text-shadow: 0 0 6px rgba(0,255,65,0.4);
-    flex-shrink: 0;
-  }
-  .send-btn:hover {
-    background: var(--green-faint);
-    box-shadow: var(--green-glow);
-  }
+.msg-line { display: block; opacity: 0; animation: slideUp 0.2s ease forwards; }
 
-  /* Blinking block cursor */
-  .blink {
-    display: inline-block;
-    width: 8px; height: 14px;
-    background: var(--green);
-    margin-left: 2px;
-    vertical-align: middle;
-    animation: blink-cursor 1s step-end infinite;
-    box-shadow: var(--green-glow);
-  }
-  @keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+/* Typing */
+.typing-wrap { border-bottom: 1px solid var(--faint); padding: 1.25rem 1.5rem; background: var(--paper); }
+.typing-byline {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; color: var(--gold2);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+}
+.typing-body {
+  font-family: var(--font-d); font-style: italic; font-size: 14px; color: var(--muted);
+  display: flex; align-items: center; gap: 10px;
+}
+.t-dots { display: flex; gap: 4px; }
+.t-d {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+  animation: tpulse 1.2s ease-in-out infinite;
+}
+.t-d:nth-child(2){animation-delay:0.15s;}
+.t-d:nth-child(3){animation-delay:0.3s;}
+@keyframes tpulse { 0%,60%,100%{transform:scale(0.5);opacity:0.3;} 30%{transform:scale(1);opacity:1;} }
 
-  @media (max-width: 600px) {
-    .input-prefix { font-size: 15px; }
-    .boot { padding: 1.5rem 1rem; }
-    .zeus-ascii { font-size: 32px; letter-spacing: 3px; }
-    .terminal { padding: 0.75rem 1rem; }
-    .input-area { padding: 0.6rem 0.75rem; }
-    .suggestions-row { display: none; }
-    .topbar { padding: 0.5rem 1rem; }
-  }
+/* ── INPUT FOOTER ── */
+.footer {
+  border-top: 3px double var(--ink); background: var(--cream);
+  padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.footer-label {
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase; flex-shrink: 0;
+}
+.footer input {
+  flex: 1; border: none; background: transparent;
+  font-family: var(--font-d); font-style: italic; font-size: 14px;
+  color: var(--ink); outline: none; min-width: 0;
+  border-bottom: 1px solid var(--faint); padding-bottom: 2px; transition: border-color 0.2s;
+}
+.footer input:focus { border-bottom-color: var(--ink); }
+.footer input::placeholder { color: var(--faint); }
+
+.send-btn {
+  background: var(--ink); border: none; color: var(--paper);
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 3px;
+  padding: 8px 20px; cursor: pointer; text-transform: uppercase; flex-shrink: 0; transition: all 0.2s;
+}
+.send-btn:hover { background: var(--gold); color: var(--ink); }
+.send-btn:active { transform: scale(0.97); }
+
+@media (max-width: 600px) {
+  .col-left { display: none; }
+  .hero-hed { font-size: 26px; }
+  .cmd-grid { grid-template-columns: 1fr; }
+  .footer   { padding: 0.6rem 1rem; }
+  .msg-wrap { padding: 1rem; }
+  .mast-rule, .mast-center { display: none; }
+}
 </style>
 </head>
 <body>
-
-<div class="cursor" id="cursor"></div>
-
+<div class="paper-bg"></div>
 <div class="app">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-title">⚡ ZEUS_AI // TERMINAL v2.0</div>
-    <div class="topbar-meta">
-      <div class="status-indicator">
-        <div class="status-dot"></div>
-        <span>ONLINE</span>
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="mast-left">
+      <div class="mast-dateline" id="dateline">Saturday, April 11, 2026</div>
+      <div class="mast-title">ZEUS</div>
+    </div>
+    <div class="mast-rule"></div>
+    <div class="mast-center">
+      <div class="mast-vol">LLaMA-3.3-70B &nbsp;·&nbsp; Groq API &nbsp;·&nbsp; Neural Edition</div>
+      <div class="mast-tagline"><em>Where mortals ask, and gods reply.</em></div>
+    </div>
+    <div class="mast-rule"></div>
+    <div class="mast-right">
+      <div class="mast-clock" id="clock">--:--:--</div>
+      <button class="mast-btn" onclick="clearChat()">New Chat</button>
+    </div>
+  </div>
+
+  <!-- SECTION RULE -->
+  <div class="section-rule">
+    <div class="sr-tag">Dispatch</div>
+    <div class="sr-line"></div>
+    <div class="sr-right">LLaMA-3.3-70B &nbsp;·&nbsp; Live</div>
+  </div>
+
+  <div class="body">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-left">
+      <div>
+        <div class="col-hd">Navigation</div>
+        <div class="nav-link active" onclick="clearChat()">Front Page</div>
+        <div class="nav-link">Archive</div>
+        <div class="nav-link">Settings</div>
       </div>
-      <span id="clock">--:--:--</span>
-      <button class="topbar-btn" onclick="clearChat()">[ CLR ]</button>
+
+      <!-- Chat count stat -->
+      <div class="chat-stat">
+        <div class="cs-label">Active Chats</div>
+        <div class="cs-count" id="chat-count">0</div>
+        <div class="cs-sub">messages this session</div>
+      </div>
+
+      <div class="pull-quote">
+        <div class="pq-text">"Ask me anything. I have seen the beginning of the world — your question is nothing I haven't heard before."</div>
+        <div class="pq-attr">— Zeus, God of Thunder</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="front" id="front">
+        <div class="hero">
+          <div class="hero-kicker">Breaking</div>
+          <div class="hero-hed">Vanakkam da <em>Mapla</em></div>
+          <div class="hero-dek">Naa tha Zeus — ethuvum venum na kelu. The oracle is open. What will you ask?</div>
+          <div class="cmd-grid">
+            <div class="cmd-cell" onclick="suggest('Today\'s hot news')">
+              <span class="cmd-num">Query 01</span>Today's Hot News
+            </div>
+            <div class="cmd-cell" onclick="suggest('What can you do?')">
+              <span class="cmd-num">Query 02</span>Capabilities
+            </div>
+            <div class="cmd-cell" onclick="suggest('Explain black holes')">
+              <span class="cmd-num">Query 03</span>Explain Black Holes
+            </div>
+            <div class="cmd-cell" onclick="suggest('How many AIs exist?')">
+              <span class="cmd-num">Query 04</span>How Many AIs Exist?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat" id="chat"></div>
+
     </div>
   </div>
 
-  <!-- BOOT SCREEN -->
-  <div class="boot" id="boot">
-    <div class="boot-line bright" style="animation-delay:0.05s">ZEUS_AI TERMINAL — BUILD 2025.04</div>
-    <div class="boot-line" style="animation-delay:0.15s">Connecting to Groq API.................. <span style="color:var(--green)">OK</span></div>
-    <div class="boot-line" style="animation-delay:0.25s">Loading LLaMA-3.3-70B model............. <span style="color:var(--green)">OK</span></div>
-    <div class="boot-line gap" style="animation-delay:0.35s">Mounting conversation kernel............. <span style="color:var(--green)">OK</span></div>
-    <div class="boot-line amber" style="animation-delay:0.45s">WARNING: Zeus personality active. Proceed with caution.</div>
-    <div class="zeus-ascii">[ ZEUS ]</div>
-    <div class="boot-prompt">System ready. Awaiting input.<span class="blink"></span></div>
-    <div class="suggestions-row">
-      <button class="suggestion" onclick="suggest('Today\'s hot news')">$ today's news</button>
-      <button class="suggestion" onclick="suggest('What can you do?')">$ capabilities</button>
-      <button class="suggestion" onclick="suggest('Explain black holes')">$ black holes</button>
-      <button class="suggestion" onclick="suggest('How many AIs are there?')">$ list AIs</button>
-    </div>
-  </div>
-
-  <!-- TERMINAL OUTPUT -->
-  <div class="terminal" id="terminal"></div>
-
-  <!-- INPUT BAR -->
-  <div class="input-area">
-    <div class="input-prefix">root@zeus:~$</div>
-    <input type="text" id="inp" placeholder="enter command..." autocomplete="off" spellcheck="false" />
-    <button class="send-btn" onclick="sendMessage()">EXEC</button>
+  <!-- FOOTER INPUT -->
+  <div class="footer">
+    <div class="footer-label">Dispatch →</div>
+    <input type="text" id="inp" placeholder="Address your query to Zeus..." autocomplete="off" spellcheck="false"/>
+    <button class="send-btn" onclick="sendMessage()">Transmit</button>
   </div>
 
 </div>
 
 <script>
-  // Custom cursor
-  const cursorEl = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursorEl.style.left = e.clientX + 'px';
-    cursorEl.style.top = e.clientY + 'px';
-  });
-  document.addEventListener('mousedown', () => cursorEl.style.transform = 'scaleY(0.6)');
-  document.addEventListener('mouseup',   () => cursorEl.style.transform = 'scaleY(1)');
+  let chatCount = 0;
 
-  // Live clock
-  function updateClock() {
-    document.getElementById('clock').textContent =
-      new Date().toLocaleTimeString([], { hour12: false });
+  function tick(){
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString([],{hour12:false});
+    document.getElementById('dateline').textContent = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   }
-  setInterval(updateClock, 1000);
-  updateClock();
+  setInterval(tick,1000); tick();
 
-  function getTime() {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  function updateCount(){
+    document.getElementById('chat-count').textContent = chatCount;
   }
 
-  function suggest(text) {
-    document.getElementById('inp').value = text;
-    sendMessage();
+  function ts(){ return new Date().toLocaleTimeString([],{hour12:false}); }
+  function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function suggest(t){ document.getElementById('inp').value=t; sendMessage(); }
+
+  async function clearChat(){
+    chatCount = 0; updateCount();
+    const chat=document.getElementById('chat');
+    chat.innerHTML=''; chat.classList.remove('on');
+    document.getElementById('front').style.display='flex';
+    await fetch('/clear',{method:'POST'}).catch(()=>{});
   }
 
-  async function clearChat() {
-    const terminal = document.getElementById('terminal');
-    terminal.innerHTML = '';
-    terminal.classList.remove('active');
-    document.getElementById('boot').style.display = 'flex';
-    await fetch('/clear', { method: 'POST' }).catch(() => {});
-  }
+  let busy=false;
+  async function sendMessage(){
+    if(busy)return;
+    const inp=document.getElementById('inp');
+    const chat=document.getElementById('chat');
+    const front=document.getElementById('front');
+    const msg=inp.value.trim();
+    if(!msg)return;
+    busy=true;
+    front.style.display='none';
+    chat.classList.add('on');
+    inp.value='';
+    chatCount++; updateCount();
 
-  function esc(t) {
-    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
+    /* User block */
+    const ub=document.createElement('div'); ub.className='msg-wrap user';
+    ub.innerHTML=`
+      <div class="msg-byline user">
+        <span>${ts()}</span>
+        <div class="byline-rule"></div>
+        <span>You</span>
+      </div>
+      <div class="msg-text user">${esc(msg)}</div>`;
+    chat.appendChild(ub); chat.scrollTop=chat.scrollHeight;
 
-  let isLoading = false;
+    /* Typing */
+    const tb=document.createElement('div'); tb.className='typing-wrap'; tb.id='typing';
+    tb.innerHTML=`
+      <div class="typing-byline"><span>Zeus</span><div class="byline-rule" style="background:var(--gold2)"></div><span>${ts()}</span></div>
+      <div class="typing-body"><div class="t-dots"><div class="t-d"></div><div class="t-d"></div><div class="t-d"></div></div><span>composing response…</span></div>`;
+    chat.appendChild(tb); chat.scrollTop=chat.scrollHeight;
 
-  async function sendMessage() {
-    if (isLoading) return;
-    const inp      = document.getElementById('inp');
-    const terminal = document.getElementById('terminal');
-    const boot     = document.getElementById('boot');
-    const msg      = inp.value.trim();
-    if (!msg) return;
+    try{
+      const res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+      const data=await res.json();
+      document.getElementById('typing')?.remove();
 
-    isLoading = true;
-    boot.style.display = 'none';
-    terminal.classList.add('active');
-    inp.value = '';
+      const zb=document.createElement('div'); zb.className='msg-wrap';
+      const head=document.createElement('div'); head.className='msg-byline zeus';
+      head.innerHTML=`<span>Zeus</span><div class="byline-rule"></div><span>${ts()}</span>`;
+      zb.appendChild(head);
 
-    // User line
-    const userBlock = document.createElement('div');
-    userBlock.className = 't-block';
-    userBlock.innerHTML = `
-      <div class="t-user-line">
-        <span class="prompt">root@zeus:~$</span><span>${esc(msg)}</span>
-        <span class="t-time">[${getTime()}]</span>
-      </div>`;
-    terminal.appendChild(userBlock);
-    terminal.scrollTop = terminal.scrollHeight;
+      const body=document.createElement('div'); body.className='msg-text';
+      const lines=data.reply.split('\n').filter(l=>l.trim());
 
-    // Typing indicator
-    const typingEl = document.createElement('div');
-    typingEl.className = 't-typing';
-    typingEl.id = 'typing-indicator';
-    typingEl.innerHTML = `<span class="blink"></span> ZEUS PROCESSING...`;
-    terminal.appendChild(typingEl);
-    terminal.scrollTop = terminal.scrollHeight;
-
-    try {
-      const res = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      });
-      const data = await res.json();
-      document.getElementById('typing-indicator')?.remove();
-
-      const zeusBlock = document.createElement('div');
-      zeusBlock.className = 't-block';
-
-      const header = document.createElement('div');
-      header.className = 't-zeus-header';
-      header.textContent = `// ZEUS OUTPUT [${getTime()}]`;
-      zeusBlock.appendChild(header);
-
-      const lines = data.reply.split('\n').filter(l => l.trim() !== '');
-      lines.forEach((line, i) => {
-        const div = document.createElement('div');
-        div.className = 't-line';
-        div.style.animationDelay = `${i * 90}ms`;
-        div.textContent = line;
-        zeusBlock.appendChild(div);
+      lines.forEach((line,i)=>{
+        const s=document.createElement('span'); s.className='msg-line';
+        s.style.animationDelay=`${i*80}ms`;
+        s.textContent=line;
+        if(i<lines.length-1) s.style.marginBottom='6px';
+        body.appendChild(s);
       });
 
-      const hr = document.createElement('hr');
-      hr.className = 't-divider';
-      const hrDelay = lines.length * 90 + 120;
-      hr.style.animation = `fadeIn 0.2s ${hrDelay}ms forwards`;
-      zeusBlock.appendChild(hr);
+      zb.appendChild(body); chat.appendChild(zb);
+      chat.scrollTop=chat.scrollHeight;
+      setTimeout(()=>chat.scrollTop=chat.scrollHeight, lines.length*80+100);
 
-      terminal.appendChild(zeusBlock);
-      terminal.scrollTop = terminal.scrollHeight;
-      setTimeout(() => { terminal.scrollTop = terminal.scrollHeight; }, hrDelay + 100);
-
-    } catch(e) {
-      document.getElementById('typing-indicator')?.remove();
-      const errBlock = document.createElement('div');
-      errBlock.className = 't-block';
-      errBlock.innerHTML = `<div class="t-line" style="color:var(--amber);opacity:1">ERROR: Connection failed. Retry.</div><hr class="t-divider" style="opacity:0.4">`;
-      terminal.appendChild(errBlock);
+    }catch(e){
+      document.getElementById('typing')?.remove();
+      const eb=document.createElement('div'); eb.className='msg-wrap';
+      eb.innerHTML=`
+        <div class="msg-byline zeus" style="color:var(--red)"><span>Error</span></div>
+        <div class="msg-text" style="color:var(--red);font-style:italic">Transmission lost. Please retry.</div>`;
+      chat.appendChild(eb);
     }
 
-    isLoading = false;
-    terminal.scrollTop = terminal.scrollHeight;
+    busy=false; chat.scrollTop=chat.scrollHeight;
   }
 
-  document.getElementById('inp').addEventListener('keypress', e => {
-    if (e.key === 'Enter') sendMessage();
-  });
+  document.getElementById('inp').addEventListener('keypress',e=>{ if(e.key==='Enter')sendMessage(); });
 </script>
 </body>
 </html>
