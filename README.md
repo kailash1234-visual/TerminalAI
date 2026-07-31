@@ -34,4 +34,4 @@ An AI chatbot built with Python and Groq API — available as a terminal app and
 5. Open `index.html` in your browser
 
 ## 👤 Author
-Selva Kailash S — [@kailash1234-visual](https://github.com/kailash1234-visual)
+Selva Kailash S — [@kSelvaKailashS](https://github.com/SelvaKailashS)
