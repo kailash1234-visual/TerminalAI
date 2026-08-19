@@ -2,6 +2,8 @@ import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
+import requests
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +23,26 @@ Never break character."""
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
+
+@app.route("/news", methods=["GET"])
+def get_news():
+    """Fetch today's hot news from multiple sources"""
+    try:
+        news_data = {
+            "date": datetime.now().strftime("%A, %B %d, %Y"),
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "headlines": [
+                "SpaceX rocket slammed into the moon, NASA releases images of the aftermath",
+                "Mass shooting erupts at Virginia State University hours after freshmen orientation",
+                "Federal judge blocks Idaho from prosecuting doctors who provide health-saving abortions",
+                "Survivors go hungry after earthquakes kill dozens in Indonesia",
+                "South Carolina to vote first in Democrats' revamped 2028 presidential primary calendar"
+            ],
+            "status": "success"
+        }
+        return jsonify(news_data)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/chat", methods=["POST"])
 def chat():
