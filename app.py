@@ -45,17 +45,21 @@ def get_news():
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_input = request.json.get("message")
-    conversation_history.append({"role": "user", "content": user_input})
-
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[SYSTEM_PROMPT] + conversation_history,
-    )
-
-    reply = response.choices[0].message.content
-    conversation_history.append({"role": "assistant", "content": reply})
-    return jsonify({"reply": reply})
+    try:
+        user_input = request.json.get("message")
+        conversation_history.append({"role": "user", "content": user_input})
+        
+        response = client.chat.completions.create(
+            model="llama-3.1-70b-versatile",  # ✅ FIXED - This one works!
+            messages=[SYSTEM_PROMPT] + conversation_history,
+        )
+        
+        reply = response.choices[0].message.content
+        conversation_history.append({"role": "assistant", "content": reply})
+        return jsonify({"reply": reply})
+    except Exception as e:
+        print(f"ERROR: {str(e)}")  # Log the error
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
