@@ -496,8 +496,22 @@ html, body { height: 100%; background: var(--ink); overflow: hidden; }
     pane.appendChild(tb); pane.scrollTop = pane.scrollHeight;
 
     try {
-      const res  = await fetch('/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg}) });
-      const data = await res.json();
+      let res, data;
+      
+      // Check if user is asking for news
+      if(msg.toLowerCase().includes('news') || msg.toLowerCase().includes('hot')){
+        res = await fetch('/news');
+        const newsData = await res.json();
+        data = {
+          reply: `📡 TODAY'S HOT NEWS (${newsData.date} ${newsData.time})\n\n` + 
+                 newsData.headlines.map((h, i) => `${i+1}. ${h}`).join('\n')
+        };
+      } else {
+        // Regular chat
+        res = await fetch('/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg}) });
+        data = await res.json();
+      }
+      
       document.getElementById('typing')?.remove();
 
       chat.messages.push({ role:'zeus', text:data.reply, ts:ts() });
