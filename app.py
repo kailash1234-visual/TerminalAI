@@ -1,4 +1,5 @@
 import os
+import traceback
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
@@ -7,7 +8,11 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+# Debug: Check if API key exists
+api_key = os.environ.get("GROQ_API_KEY")
+print(f"DEBUG: GROQ_API_KEY is {'SET' if api_key else 'NOT SET'}")
+
+client = Groq(api_key=api_key)
 conversation_history = []
 
 SYSTEM_PROMPT = {
@@ -46,20 +51,38 @@ def get_news():
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
-        user_input = request.json.get("message")
-        conversation_history.append({"role": "user", "content": user_input})
+        print("\n" + "="*50)
+        print("DEBUG: /chat endpoint called")
         
+        user_input = request.json.get("message")
+        print(f"DEBUG: User message = '{user_input}'")
+        
+        conversation_history.append({"role": "user", "content": user_input})
+        print(f"DEBUG: Conversation history length = {len(conversation_history)}")
+        
+        print("DEBUG: Calling Groq API with model 'llama-3.1-70b-versatile'...")
         response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",  # ✅ FIXED - This one works!
+            model="llama-3.1-70b-versatile",
             messages=[SYSTEM_PROMPT] + conversation_history,
         )
+        print("DEBUG: Got response from Groq ✓")
         
         reply = response.choices[0].message.content
+        print(f"DEBUG: Reply = '{reply[:50]}...'")
+        
         conversation_history.append({"role": "assistant", "content": reply})
+        print("DEBUG: Response sent successfully ✓")
+        print("="*50 + "\n")
+        
         return jsonify({"reply": reply})
+        
     except Exception as e:
-        print(f"ERROR: {str(e)}")  # Log the error
-        return jsonify({"error": str(e)}), 500
+        print("\n" + "="*50)
+        print(f"ERROR IN /chat: {str(e)}")
+        print("FULL TRACEBACK:")
+        print(traceback.format_exc())
+        print("="*50 + "\n")
+        return jsonify({"error": str(e), "type": type(e).__name__}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
