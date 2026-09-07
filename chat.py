@@ -20,7 +20,7 @@ while True:
     conversation_history.append({"role": "user", "content": user_input})
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="groq/compound",
         messages=conversation_history,
     )
 

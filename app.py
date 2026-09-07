@@ -4,11 +4,14 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Debug: Check if API key exists
+# Check if API key exists
 api_key = os.environ.get("GROQ_API_KEY")
 print(f"DEBUG: GROQ_API_KEY is {'SET' if api_key else 'NOT SET'}")
 
@@ -51,38 +54,47 @@ def get_news():
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
-        print("\n" + "="*50)
-        print("DEBUG: /chat endpoint called")
+        data = request.get_json(silent=True) or {}
+        user_input = data.get("message", "").strip()
         
-        user_input = request.json.get("message")
-        print(f"DEBUG: User message = '{user_input}'")
+        if not user_input:
+            return jsonify({"reply": "Ask Zeus anything!"})
         
         conversation_history.append({"role": "user", "content": user_input})
-        print(f"DEBUG: Conversation history length = {len(conversation_history)}")
         
-        print("DEBUG: Calling Groq API with model 'llama-3.1-70b-versatile'...")
-        response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
-            messages=[SYSTEM_PROMPT] + conversation_history,
-        )
-        print("DEBUG: Got response from Groq ✓")
+        # Keep last 10 messages
+        recent_history = conversation_history[-10:]
+        
+        # Available models on Groq
+        models_to_try = ["groq/compound", "groq/compound-mini", "openai/gpt-oss-120b"]
+        response = None
+        last_err = None
+        
+        for model in models_to_try:
+            try:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[SYSTEM_PROMPT] + recent_history,
+                )
+                break
+            except Exception as me:
+                last_err = me
+                continue
+                
+        if not response:
+            raise last_err or Exception("Failed to query Groq API models")
         
         reply = response.choices[0].message.content
-        print(f"DEBUG: Reply = '{reply[:50]}...'")
-        
         conversation_history.append({"role": "assistant", "content": reply})
-        print("DEBUG: Response sent successfully ✓")
-        print("="*50 + "\n")
         
         return jsonify({"reply": reply})
         
     except Exception as e:
-        print("\n" + "="*50)
-        print(f"ERROR IN /chat: {str(e)}")
-        print("FULL TRACEBACK:")
-        print(traceback.format_exc())
-        print("="*50 + "\n")
-        return jsonify({"error": str(e), "type": type(e).__name__}), 500
+        err_msg = str(e)
+        print(f"ERROR IN /chat: {err_msg.encode('ascii', 'ignore').decode('ascii')}")
+        return jsonify({"error": err_msg, "type": type(e).__name__}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+
